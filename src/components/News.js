@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import NewsItems from './NewsItems'
-
+import Spin from './Spin.js'
 export class News extends Component {
     articles=[
               {
@@ -110,26 +110,34 @@ export class News extends Component {
 
      async  componentDidMount(){
         console.log("cmd");
-        let url="https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=2912c361475d4d3489bdc62aa95d35be&page=1&pageSize=20";
+        this.setState({
+          loading:true
+        })
+        let url=`https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=2912c361475d4d3489bdc62aa95d35be&page=1&pageSize=${this.props.pageSize}`;
         let data= await fetch(url);//it returns promise
         let parseData= await data.json();
         console.log(parseData);
         this.setState({articles:parseData.articles,
-        totalResults:parseData.totalResults
+        totalResults:parseData.totalResults,
+        loading:false
         })
     }
 
     handlePreviousClick=async ()=>{
       console.log("Previous-Button");
       console.log("next-Button");
-      let url=`https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=2912c361475d4d3489bdc62aa95d35be&page=${this.state.page-1}&pageSize=20`;
+      this.setState({
+        loading:true
+      })
+      let url=`https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=2912c361475d4d3489bdc62aa95d35be&page=${this.state.page-1}&pageSize=${this.props.pageSize}`;
       let data= await fetch(url);//it returns promise
       let parseData= await data.json();
       console.log(parseData);
       this.setState({
         
         articles:parseData.articles,
-        page:this.state.page-1
+        page:this.state.page-1,
+        loading:false
       
       })
       
@@ -142,14 +150,18 @@ export class News extends Component {
 
  else{
       console.log("next-Button");
-      let url=`https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=2912c361475d4d3489bdc62aa95d35be&page=${this.state.page+1}&pageSize=20`;
+      this.setState({
+        loading:true
+      })
+      let url=`https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=2912c361475d4d3489bdc62aa95d35be&page=${this.state.page+1}&pageSize=${this.props.pageSize}`;
       let data= await fetch(url);//it returns promise
       let parseData= await data.json();
       console.log(parseData);
       this.setState({
-        
+
         articles:parseData.articles,
-        page:this.state.page+1
+        page:this.state.page+1,
+        loading:false
       
       })
 
@@ -160,9 +172,13 @@ export class News extends Component {
   render() {
     return (
       <div  className='container my-3'>
-         <h2>MonkeyNews-Top Headline</h2>
+        <h1 className="text-center">MonkeyNews-Top Headline</h1>
+        
+
+        {this.state.loading && <Spin/>}
+      
        <div className="row">
-       {this.state.articles.map((element)=>{
+       {!this.state.loading && this.state.articles.map((element)=>{
    return <div className="col-md-4" key={element.url}>
    <NewsItems title={element.title?element.title.slice(0,40):""} description={element.description?element.description.slice(0,80):""} imageUrl={element.urlToImage} newsUrl={element.url}/>
     </div>
@@ -171,7 +187,7 @@ export class News extends Component {
        </div>
        <div className="container d-flex justify-content-between">
     <button disabled={this.state.page<=1} type="button" className="btn btn-dark" onClick={this.handlePreviousClick}>Previous &larr;</button>
-    <button type="button" className="btn btn-dark" onClick={this.handleNextClick}>Next  	&rarr;</button>
+    <button disabled={this.state.page+1>Math.ceil(this.state.totalResults/20)} type="button" className="btn btn-dark" onClick={this.handleNextClick}>Next  	&rarr;</button>
     </div>
       </div>
     )
