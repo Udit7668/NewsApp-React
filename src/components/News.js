@@ -111,8 +111,12 @@ export class News extends Component {
               }
       ]
 
-      constructor(){
-        super();
+      capitaliseFirstLetter=(category)=>{
+    return category.charAt(0).toUpperCase()+category.slice(1);
+      }
+
+      constructor(props){
+        super(props);
      console.log("Hello from news constructor")
     //creating state in class based component
     this.state={
@@ -120,6 +124,7 @@ export class News extends Component {
         loading:false,
         page:1
     }
+ document.title=`${this.capitaliseFirstLetter(this.props.category)}-NewsMonkey`;
 
     }
 
@@ -188,7 +193,7 @@ export class News extends Component {
   render() {
     return (
       <div  className='container my-3'>
-        <h1 className="text-center">MonkeyNews-Top Headline</h1>
+        <h1 className="text-center">MonkeyNews-Top Headline for {this.capitaliseFirstLetter(this.props.category)}</h1>
         
 
         {this.state.loading && <Spin/>}
