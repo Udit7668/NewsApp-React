@@ -6,9 +6,9 @@ import PropTypes from 'prop-types'
 
 export class News extends Component {
    static defaultProps={
-    country:"us",
+    country:"in",
     pageSize:6,
-    category:'business'
+    category:'general'
    }
 
    static propTypes={
@@ -117,7 +117,7 @@ export class News extends Component {
 
       constructor(props){
         super(props);
-     console.log("Hello from news constructor")
+     console.log("Hello frhttps://Udit7668.github.io/NewsApp-Reactom news constructor")
     //creating state in class based component
     this.state={
         articles:this.articles,
